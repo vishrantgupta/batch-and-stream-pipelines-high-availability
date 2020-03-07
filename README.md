@@ -1,7 +1,7 @@
 <p>Resources: <a href="https://kubernetes.io/docs/concepts/configuration/assign-pod-node/">https://kubernetes.io/docs/concepts/configuration/assign-pod-node/</a>
 </p>
 <h1>Introduction</h1>
-<p>As PLM we are asked to review the affinity and anti affinity rules we need for running pipelines. For this we will consider the cases of Flink and Spark separately, because their characteristics are slightly different. Their characteristics are, for the most part, quite different from 'services'.</p>
+<p>This document is intented to review the batch and stream affinity and anti-affinity rules. For this we will consider the cases of Flink and Spark separately, because their characteristics are slightly different. Their characteristics are, for the most part, quite different from 'services'.</p>
 <p>For services, the main motivation for anti-affinity rules is high availability. In case of a Node or Zone failure we want to avoid any interruption of service. For Batch and Streaming pipelines this may however be unavoidable.</p>
 <h1>Characteristics</h1>
 <h2>Spark</h2>
@@ -22,10 +22,9 @@
   <li>When a taskmanager is lost, the Flink job will go through an automatic restart (if configured)</li>
   <li>Data exchange between taskmanager nodes is one of the main limiting factors in processing speed. Depending on the Flink Job graph and parallelism of operators, large data will be exchanged across the network.</li>
 </ul>
-<h1>Proposal</h1>
-<p>We are proposing the following rules for pipelines:</p>
+<h1>Consideration</h1>
+<p>We can consider the following rules for pipelines:</p>
 <h2>Batch</h2>
-<p>We propose to only implement these rules for Batch 2.0.0 and up</p>
 <h3>Master</h3>
 <p>
   <u>Affinity:</u> The master pod shall be scheduled in the same availability zone as the workers and driver pods for the same pipeline job.</p>
@@ -40,7 +39,6 @@
 <h3>Monitor</h3>
 <p>Although it could be useful to schedule the monitor in the same zone, the process is resilient enough to be scheduled anywhere.</p>
 <h2>Stream</h2>
-<p>We propose to only implement these rules for Stream 2.0.0 and up</p>
 <h3>Jobmanager</h3>
 <p>
   <u>AntiAffinity:</u> the redundant jobmanagers shall be scheduled across different zones as much as possible for the same pipeline job.</p>
